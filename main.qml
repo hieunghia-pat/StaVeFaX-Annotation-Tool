@@ -9,6 +9,7 @@ ApplicationWindow {
     title: "Annotation Tool"
     width: Screen.width
     height: Screen.height
+    color: "white"
 
     menuBar: MainMenuBar {
 
@@ -27,15 +28,32 @@ ApplicationWindow {
         }
 
         PassageContainer {
-            width: parent.width / 2 - 10
-            height: parent.height
-
-        }
-
-        AnnotationContainer {
             width: (parent.width / 2) - 10
             height: parent.height
+
         }
+
+        Rectangle {
+            id: annotationContainer
+            color: "white"
+            width: (parent.width / 2) - 10
+            height: parent.height
+
+            ListView {
+                    model: 5
+                    anchors {
+                        fill: parent
+                        centerIn: parent
+                    }
+                    delegate: AnnotationItem {
+                        parentWidth: annotationContainer.width
+                        index: modelData
+                    }
+                    spacing: 10
+                }
+        }
+
+        spacing: 5
     }
 
 }

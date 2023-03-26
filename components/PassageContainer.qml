@@ -1,18 +1,23 @@
 import QtQuick
 import QtQuick.Controls
 
-TextArea {
+Rectangle {
     id: passageContainer
 
-    readOnly: true
-    selectByMouse: true
-    mouseSelectionMode: TextEdit.SelectWords
+    TextArea {
+        anchors {
+            fill: parent
+            centerIn: parent
+        }
+        readOnly: true
+        selectByMouse: true
+        mouseSelectionMode: TextEdit.SelectWords
 
-    // text: annotationModel.context
-    text: "This is a sample paragraph"
-    padding: 5
-    font {
-        pointSize: 23
+        // text: annotationModel.context
+        text: "This is a sample paragraph"
+        padding: 5
+        font {
+            pointSize: 23
+        }
     }
-
 }
