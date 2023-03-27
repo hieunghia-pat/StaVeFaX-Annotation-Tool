@@ -114,11 +114,11 @@ class AnnotationModel(QAbstractListModel):
         return [annotation.annotation for annotation in self.__data]
 
     @Property
-    def selectedIndex(self):
+    def index(self):
         return self.__selectedIndex
     
-    @selectedIndex.setter
-    def selectedIndex(self, value: int):
+    @index.setter
+    def index(self, value: int):
         self.__selectedIndex = value
     
     @Slot(list)
