@@ -5,6 +5,7 @@ import QtQuick.Layouts
 Rectangle {
     property int parentWidth
     property int index
+    property int selectedIndex
     property var annotationModel
 
     signal annotationIndex(index: int)
@@ -17,6 +18,27 @@ Rectangle {
         color: "#d6d6d6"
     }
     radius: 23
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        hoverEnabled: true
+        propagateComposedEvents: true
+
+        signal selectedIndex(index: int)
+        
+        onClicked: {
+            if (index != selectedIndex) {
+                border.width = 3
+                border.color = "#b8b8b8"
+                selectedIndex = index
+            }
+            else {
+                border.width = 1
+                border.color = "#d6d6d6"
+            }
+        }
+    }
 
     ColumnLayout {
         id: columnLayout
@@ -102,6 +124,8 @@ Rectangle {
                     horizontalCenter: parent.horizontalCenter
                 }
                 model: ["SUPPORTED", "NEI", "REFUTED"]
+                currentIndex: 1
+                
                 onCurrentIndexChanged: {
                     if (currentIndex == 0) {
                         evidenceText.enabled = true
@@ -147,6 +171,7 @@ Rectangle {
                             pointSize: 13
                         }
                         readOnly: true
+                        enabled: false
                         padding: 7
                         horizontalAlignment: Text.AlignHCenter
                         anchors {

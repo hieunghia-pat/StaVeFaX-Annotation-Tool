@@ -25,6 +25,7 @@ ApplicationWindow {
         anchors {
             fill: parent
             centerIn: parent
+            topMargin: 10
         }
 
         PassageContainer {
@@ -34,23 +35,26 @@ ApplicationWindow {
         }
 
         Rectangle {
+            property int selectedIndex: 0
+            
             id: annotationContainer
             color: "white"
             width: (parent.width / 2) - 10
             height: parent.height
 
             ListView {
-                    model: 5
-                    anchors {
-                        fill: parent
-                        centerIn: parent
-                    }
-                    delegate: AnnotationItem {
-                        parentWidth: annotationContainer.width
-                        index: modelData
-                    }
-                    spacing: 10
+                model: 5
+                anchors {
+                    fill: parent
+                    centerIn: parent
                 }
+                delegate: AnnotationItem {
+                    parentWidth: annotationContainer.width
+                    index: modelData
+                    selectedIndex: selectedIndex
+                }
+                spacing: 10
+            }
         }
 
         spacing: 5

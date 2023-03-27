@@ -1,6 +1,6 @@
 from typing import Optional, Union, Any, List, Dict
 
-from PySide6.QtCore import Qt, QObject, QAbstractListModel, QModelIndex, QPersistentModelIndex, Signal, Slot, QByteArray
+from PySide6.QtCore import Qt, QObject, QAbstractListModel, QModelIndex, QPersistentModelIndex, Signal, Slot, Property, QByteArray
 
 from sources.Annotation import Annotation
 
@@ -22,6 +22,7 @@ class AnnotationModel(QAbstractListModel):
         super().__init__()
 
         self.__data = [Annotation()]
+        self.__selectedIndex = 0
 
     def __len__(self):
         return len(self.__data)
@@ -111,6 +112,14 @@ class AnnotationModel(QAbstractListModel):
     @property
     def annotations(self):
         return [annotation.annotation for annotation in self.__data]
+
+    @Property
+    def selectedIndex(self):
+        return self.__selectedIndex
+    
+    @selectedIndex.setter
+    def selectedIndex(self, value: int):
+        self.__selectedIndex = value
     
     @Slot(list)
     def setAnnotations(self, annotations: List[Dict]):
