@@ -51,7 +51,6 @@ ApplicationWindow {
                 delegate: AnnotationItem {
                     parentWidth: annotationContainer.width
                     index: modelData
-                    selectedIndex: selectedIndex
                 }
                 spacing: 10
             }

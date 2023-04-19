@@ -1,11 +1,10 @@
 import json
-from typing import Dict
 
-from PySide6.QtCore import QObject, Signal, Slot
+from PySide6.QtCore import QObject, Signal, Slot, QStandardPaths
 
 class Backend(QObject):
     fileNotFoundSignal = Signal(str)
-    loadedAnnotations = Signal(Dict)
+    loadedAnnotations = Signal(dict)
 
     def __init__(self, parent: QObject = QObject()) -> None:
         super().__init__(parent)
@@ -13,17 +12,18 @@ class Backend(QObject):
         # internal properties
         self.__data = []
         self.__currentIdx = 0
+        self.__selectedPath: str = QStandardPaths.standardLocations(QStandardPaths.DocumentsLocation)[0]
 
     def __len__(self) -> int:
         return len(self.__data)
     
-    def annotations(self, idx: int = None):
+    def annotation(self, idx: int = None):
         if idx is None:
             return self.__data[self.__currentIdx]
 
         return self.__data[idx]
 
-    @Slot(str)
+    @Slot()
     def loadData(self, path: str) -> bool:
         try:
             tmpData = json.load(open(path, "r"))
@@ -31,10 +31,15 @@ class Backend(QObject):
             self.fileNotFoundSignal.emit(error.strerror)
             return False
 
+        self.__selectedPath = path
         self.__data = tmpData
         self.loadedAnnotations.emit(self.__data[self.__currentIdx])
 
         return True
+    
+    @Slot()
+    def saveData(self):
+        json.dumps(self.__data, open(self.__selectedPath, "w+"), ensure_ascii=True)
 
     @Slot()
     def nextAnnotation(self) -> None:
@@ -42,7 +47,7 @@ class Backend(QObject):
             return
         
         self.__currentIdx += 1
-        self.loadedAnnotation(self.__data[self.__currentIdx])
+        self.loadedAnnotations.emit(self.__data[self.__currentIdx])
 
     @Slot()
     def previousAnnotation(self) -> None:
@@ -51,4 +56,4 @@ class Backend(QObject):
             return
 
         self.__currentIdx -= 1
-        self.loadedAnnotations(self.__data[self.__currentIdx])
+        self.loadedAnnotations.emit(self.__data[self.__currentIdx])

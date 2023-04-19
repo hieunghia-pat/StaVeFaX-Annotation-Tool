@@ -21,7 +21,12 @@ class AnnotationModel(QAbstractListModel):
     def __init__(self, parent: Optional[QObject] = ...) -> None:
         super().__init__()
 
-        self.__data = [Annotation()]
+        self.__data = [Annotation({
+            "context": "None",
+            "statement": "None",
+            "verdict": 1,
+            "evidence": "None"
+        })]
         self.__selectedIndex = 0
 
     def __len__(self):
@@ -44,7 +49,7 @@ class AnnotationModel(QAbstractListModel):
             return self.__data[index.row()].verdict
         
         if role == self.EVIDENCE:
-            return self.__data[index.row()].evidence
+            return self.__data[self.__selectedIndex].evidence
         
         return None
     
@@ -100,7 +105,6 @@ class AnnotationModel(QAbstractListModel):
             self.STATEMENT: "statement",
             self.VERDICT: "verdict",
             self.EVIDENCE: "evidence"
-
         }
     
     def flags(self, index: Union[QModelIndex, QPersistentModelIndex]) -> Qt.ItemFlag:
@@ -113,7 +117,7 @@ class AnnotationModel(QAbstractListModel):
     def annotations(self):
         return [annotation.annotation for annotation in self.__data]
 
-    @Property
+    @Property(int)
     def index(self):
         return self.__selectedIndex
     

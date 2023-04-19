@@ -13,11 +13,13 @@ Rectangle {
         selectByMouse: true
         mouseSelectionMode: TextEdit.SelectWords
 
-        // text: annotationModel.context
-        text: "This is a sample paragraph"
+        text: annotationModel.context
         padding: 5
         font {
             pointSize: 23
+        }
+        onSelectedTextChanged: {
+            annotationModel.context = selectedText
         }
     }
 }

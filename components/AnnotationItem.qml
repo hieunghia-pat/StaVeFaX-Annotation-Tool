@@ -5,10 +5,8 @@ import QtQuick.Layouts
 Rectangle {
     property int parentWidth
     property int index
-    property int selectedIndex
-    property var annotationModel
 
-    signal annotationIndex(index: int)
+    signal updateFocus(isFocus: bool)
 
     id: annotationItemContainer
     width: parentWidth
@@ -19,25 +17,26 @@ Rectangle {
     }
     radius: 23
 
+    Connections {
+        target: annotationItemContainer
+        function onUpdateFocus(isFocus) {
+            if (isFocus) {
+                annotationItemContainer.border.color = "#c2c2c2"
+                annotationItemContainer.border.width = 2
+                annotationModel.index = index
+            }
+            else {
+                annotationItemContainer.border.color = "#d6d6d6"
+                annotationItemContainer.border.width = 1
+            }
+        }
+    }
+
     MouseArea {
         id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
         propagateComposedEvents: true
-
-        signal selectedIndex(index: int)
-        
-        onClicked: {
-            if (index != selectedIndex) {
-                border.width = 3
-                border.color = "#b8b8b8"
-                selectedIndex = index
-            }
-            else {
-                border.width = 1
-                border.color = "#d6d6d6"
-            }
-        }
     }
 
     ColumnLayout {
@@ -97,14 +96,14 @@ Rectangle {
                         centerIn: parent
                     }
 
-                    // text: annotationModel.statement
-                    text: "statement"
+                    text: annotationModel.statement
                     font {
                         pointSize: 13
                     }
 
+                    onFocusChanged: isFocus => updateFocus(isFocus)
                     onTextChanged: {
-
+                        annotationModel.statement = text
                     }
                 }
             }
@@ -125,16 +124,7 @@ Rectangle {
                 }
                 model: ["SUPPORTED", "NEI", "REFUTED"]
                 currentIndex: 1
-                
-                onCurrentIndexChanged: {
-                    if (currentIndex == 0) {
-                        evidenceText.enabled = true
-                        annotationIndex(index)
-                    }
-                    else {
-                        evidenceText.enabled = false
-                    }
-                }
+                onFocusChanged: isFocus => updateFocus(isFocus)
             }
         }
 

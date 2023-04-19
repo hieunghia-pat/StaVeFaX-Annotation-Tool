@@ -8,7 +8,7 @@ class Annotation(QObject):
     }
     idx2label = {value: key for key, value in label2idx.items()}
 
-    def __init__(self, annotation = None):
+    def __init__(self, annotation: dict):
         super().__init__()
 
         self.__annotation = annotation
@@ -19,7 +19,8 @@ class Annotation(QObject):
 
     @Property(str)
     def context(self) -> str:
-        return self.__annotation["context"] if self.__annotation is not None else ""
+        print("In Annotation::context")
+        return self.__annotation["context"]
     
     @context.setter
     def context(self, value: str) -> None:
@@ -27,7 +28,8 @@ class Annotation(QObject):
 
     @Property(str)
     def statement(self) -> str:
-        return self.__annotation["statement"] if self.__annotation is not None else ""
+        print("In Annotation::statement")
+        return self.__annotation["statement"]
     
     @statement.setter
     def statement(self, value: str) -> None:
