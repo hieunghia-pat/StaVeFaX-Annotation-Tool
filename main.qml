@@ -31,7 +31,7 @@ ApplicationWindow {
         PassageContainer {
             width: (parent.width / 2) - 10
             height: parent.height
-
+            context: annotationModel.context
         }
 
         Rectangle {
@@ -43,14 +43,14 @@ ApplicationWindow {
             height: parent.height
 
             ListView {
-                model: 5
+                model: annotationModel
                 anchors {
                     fill: parent
                     centerIn: parent
                 }
                 delegate: AnnotationItem {
                     parentWidth: annotationContainer.width
-                    index: modelData
+                    index: index
                 }
                 spacing: 10
             }

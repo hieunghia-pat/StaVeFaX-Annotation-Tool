@@ -96,14 +96,14 @@ Rectangle {
                         centerIn: parent
                     }
 
-                    text: annotationModel.statement
+                    text: statement
                     font {
                         pointSize: 13
                     }
 
                     onFocusChanged: isFocus => updateFocus(isFocus)
                     onTextChanged: {
-                        annotationModel.statement = text
+                        statement = text
                     }
                 }
             }
@@ -156,7 +156,7 @@ Rectangle {
                         id: evidenceText
                         width: parent.width
                         height: implicitHeight
-                        text: "This is the evidence. This is the evidence. This is the evidence. This is the evidence. This is the evidence. This is the evidence. This is the evidence. This is the evidence. This is the evidence. This is the evidence"
+                        text: evidence
                         font {
                             pointSize: 13
                         }

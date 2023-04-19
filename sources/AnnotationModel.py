@@ -6,14 +6,12 @@ from sources.Annotation import Annotation
 
 class AnnotationModel(QAbstractListModel):
     # defined the roles
-    CONTEXT = Qt.UserRole
-    STATEMENT = Qt.UserRole + 1
-    VERDICT = Qt.UserRole + 2
-    EVIDENCE = Qt.UserRole + 3
+    STATEMENT = Qt.UserRole
+    VERDICT = Qt.UserRole + 1
+    EVIDENCE = Qt.UserRole + 2
 
     # signals
     rowInsertErrorSignal = Signal(str)
-    setContextErrorSignal = Signal(str)
     setStatementErrorSignal = Signal(str)
     setVerdictErrorSignal = Signal(str)
     setEvidenceErrorSignal = Signal(str)
@@ -21,11 +19,11 @@ class AnnotationModel(QAbstractListModel):
     def __init__(self, parent: Optional[QObject] = ...) -> None:
         super().__init__()
 
+        self.__context = "Context is unavailable"
         self.__data = [Annotation({
-            "context": "None",
-            "statement": "None",
+            "statement": "Statement is unavailable",
             "verdict": 1,
-            "evidence": "None"
+            "evidence": "Evidence is unavailable"
         })]
         self.__selectedIndex = 0
 
@@ -35,12 +33,17 @@ class AnnotationModel(QAbstractListModel):
     def rowCount(self, parent: Union[QModelIndex, QPersistentModelIndex] = ...) -> int:
         return len(self.__data)
     
+    @Property(str)
+    def context(self) -> str:
+        return self.__context
+    
+    @context.setter
+    def context(self, value: str):
+        self.__context = value
+    
     def data(self, index: Union[QModelIndex, QPersistentModelIndex], role: int = ...) -> Any:
         if not index.isValid():
             return None
-        
-        if role == self.CONTEXT:
-            return self.__data[index.row()].context
         
         if role == self.STATEMENT:
             return self.__data[index.row()].statement
@@ -56,24 +59,19 @@ class AnnotationModel(QAbstractListModel):
     def setData(self, index: Union[QModelIndex, QPersistentModelIndex], value: Any, role: int = ...) -> bool:
         if not index.isValid():
             return False
-        
-        if role == self.CONTEXT:
-            self.__data[index.row()].context(str(value))
-            self.dataChanged.emit(index, index)
-            return True
 
         if role == self.STATEMENT:
-            self.__data[index.row()].statement(str(value))
+            self.__data[index.row()].setStatement(str(value))
             self.dataChanged.emit(index, index)
             return True
         
         if role == self.VERDICT:
-            self.__data[index.row()].verdict(int(value))
+            self.__data[index.row()].setVerdict(int(value))
             self.dataChanged.emit(index, index)
             return True
         
         if role == self.EVIDENCE:
-            self.__data[index.row()].evidence(str(value))
+            self.__data[index.row()].setEvidence(str(value))
             self.dataChanged.emit(index, index)
             return True
         
@@ -101,10 +99,9 @@ class AnnotationModel(QAbstractListModel):
     
     def roleNames(self) -> Dict[int, QByteArray]:
         return {
-            self.CONTEXT: "context",
-            self.STATEMENT: "statement",
-            self.VERDICT: "verdict",
-            self.EVIDENCE: "evidence"
+            self.STATEMENT: b"statement",
+            self.VERDICT: b"verdict",
+            self.EVIDENCE: b"evidence"
         }
     
     def flags(self, index: Union[QModelIndex, QPersistentModelIndex]) -> Qt.ItemFlag:
@@ -124,6 +121,13 @@ class AnnotationModel(QAbstractListModel):
     @index.setter
     def index(self, value: int):
         self.__selectedIndex = value
+
+    @Slot(str)
+    def setEvidence(self, evidence: str):
+        if evidence == "": # skip updating when evidence is an empty string
+            return
+        index = self.createIndex(self.__selectedIndex, 0)
+        self.setData(index, evidence, self.EVIDENCE)
     
     @Slot(list)
     def setAnnotations(self, annotations: List[Dict]):
@@ -138,11 +142,6 @@ class AnnotationModel(QAbstractListModel):
             insertedRow = self.insertRow(idx)
             if not insertedRow:
                 self.rowInsertErrorSignal(f"Cannot insert row at index {idx}th")
-
-            setContext = self.setData(self.index(idx, 0, QModelIndex()),
-                                      annotation["context"], self.CONTEXT)
-            if not setContext:
-                self.setContextErrorSignal.emit(f"Cannot set context for annotation {idx}th")
 
             setStatement = self.setData(self.index(idx, 0, QModelIndex()),
                                       annotation["statement"], self.STATEMENT)

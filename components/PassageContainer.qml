@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Controls
 
 Rectangle {
+    property string context
+
     id: passageContainer
 
     TextArea {
@@ -13,13 +15,13 @@ Rectangle {
         selectByMouse: true
         mouseSelectionMode: TextEdit.SelectWords
 
-        text: annotationModel.context
+        text: context
         padding: 5
         font {
             pointSize: 23
         }
         onSelectedTextChanged: {
-            annotationModel.context = selectedText
+            annotationModel.setEvidence(selectedText)
         }
     }
 }
