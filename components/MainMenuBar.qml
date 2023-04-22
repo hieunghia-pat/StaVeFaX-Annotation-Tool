@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Controls
 
 MenuBar {
+    property var openFileDialog
+
     Menu {
         title: qsTr("&File")
         
@@ -11,9 +13,7 @@ MenuBar {
             icon {
                 source: "../media/icons/open-icon.png"
             }
-            onTriggered: {
-                
-            }
+            onTriggered: openFileDialog.open()
         }
 
         Action {
@@ -22,9 +22,7 @@ MenuBar {
             icon {
                 source: "../media/icons/save-icon.png"
             }
-            onTriggered: {
-
-            }
+            onTriggered: backend.saveData()
         }
 
         Action {

@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Dialogs
 
 import "components"
 
@@ -11,8 +12,15 @@ ApplicationWindow {
     height: Screen.height
     color: "white"
 
-    menuBar: MainMenuBar {
+    FileDialog {
+        id: openFileDialog
+        onAccepted: {
+            backend.loadData(selectedFile)
+        }
+    }
 
+    menuBar: MainMenuBar {
+        
     }
 
     header: MainToolBar {

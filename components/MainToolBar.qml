@@ -3,23 +3,21 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 ToolBar {
+    property var openFileDialog
+
     RowLayout {
         ToolButton {
             icon {
                 source: "../media/icons/open-icon.png"
             }
-            onClicked: {
-
-            }
+            onClicked: openFileDialog.open()
         }
 
         ToolButton {
             icon {
                 source: "../media/icons/save-icon.png"
             }
-            onClicked: {
-
-            }
+            onClicked: backend.saveData()
         }
 
         ToolButton {
