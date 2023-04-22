@@ -20,11 +20,11 @@ ApplicationWindow {
     }
 
     menuBar: MainMenuBar {
-        
+        openFileDialog: openFileDialog
     }
 
     header: MainToolBar {
-        
+        openFileDialog: openFileDialog
     }
 
     Row {

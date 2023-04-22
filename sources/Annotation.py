@@ -8,10 +8,14 @@ class Annotation(QObject):
     }
     idx2label = {value: key for key, value in label2idx.items()}
 
-    def __init__(self, annotation: dict):
+    def __init__(self, annotation: dict=None):
         super().__init__()
 
-        self.__annotation = annotation
+        self.__annotation = annotation if annotation is not None else {
+            "statement": "",
+            "verdict": 1,
+            "evidence": ""
+        }
 
     @property
     def annotation(self):
