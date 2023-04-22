@@ -1,4 +1,5 @@
 import json
+import re
 
 from PySide6.QtCore import QObject, Signal, Slot, QStandardPaths
 
@@ -23,8 +24,9 @@ class Backend(QObject):
 
         return self.__data[idx]
 
-    @Slot()
+    @Slot(str)
     def loadData(self, path: str) -> bool:
+        path = re.sub("file://", "", path)
         try:
             tmpData = json.load(open(path, "r"))
         except FileNotFoundError as error:
