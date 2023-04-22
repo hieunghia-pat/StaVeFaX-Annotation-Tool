@@ -4,7 +4,6 @@ import QtQuick.Layouts
 
 Rectangle {
     property int parentWidth
-    property int index
 
     signal updateFocus(isFocus: bool)
 
@@ -23,7 +22,7 @@ Rectangle {
             if (isFocus) {
                 annotationItemContainer.border.color = "#c2c2c2"
                 annotationItemContainer.border.width = 2
-                annotationModel.index = index
+                annotationModel.selectedIndex = index
             }
             else {
                 annotationItemContainer.border.color = "#d6d6d6"

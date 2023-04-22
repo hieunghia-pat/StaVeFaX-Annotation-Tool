@@ -58,7 +58,6 @@ ApplicationWindow {
                 }
                 delegate: AnnotationItem {
                     parentWidth: annotationContainer.width
-                    index: index
                 }
                 spacing: 10
             }

@@ -52,7 +52,7 @@ class AnnotationModel(QAbstractListModel):
             return self.__data[index.row()].verdict
         
         if role == self.EVIDENCE:
-            return self.__data[self.__selectedIndex].evidence
+            return self.__data[index.row()].evidence
         
         return None
     
