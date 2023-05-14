@@ -7,6 +7,7 @@ Rectangle {
     id: passageContainer
 
     TextArea {
+        id: contextTextArea
         anchors {
             fill: parent
             centerIn: parent
@@ -22,6 +23,13 @@ Rectangle {
         }
         onSelectedTextChanged: {
             annotationModel.setEvidence(selectedText)
+        }
+
+        Connections {
+            target: annotationModel
+            onContextChanged: {
+                contextTextArea.text = context
+            }
         }
     }
 }

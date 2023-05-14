@@ -15,6 +15,7 @@ class AnnotationModel(QAbstractListModel):
     setStatementErrorSignal = Signal(str)
     setVerdictErrorSignal = Signal(str)
     setEvidenceErrorSignal = Signal(str)
+    contextChanged = Signal()
 
     def __init__(self, parent: Optional[QObject] = ...) -> None:
         super().__init__()
@@ -22,7 +23,7 @@ class AnnotationModel(QAbstractListModel):
         self.__context = "Context is unavailable"
         self.__data = [Annotation({
             "statement": "Statement is unavailable",
-            "verdict": 1,
+            "verdict": 0,
             "evidence": "Evidence is unavailable"
         })]
         self.__selectedIndex = 0
@@ -39,6 +40,7 @@ class AnnotationModel(QAbstractListModel):
     
     @context.setter
     def context(self, value: str):
+        print(value)
         self.__context = value
     
     def data(self, index: Union[QModelIndex, QPersistentModelIndex], role: int = ...) -> Any:
@@ -137,11 +139,12 @@ class AnnotationModel(QAbstractListModel):
 
         # reset the annotations
         self.__context = annotation["context"]
+        self.contextChanged.emit()
         self.__data = []
         if len(annotation["information"]) == 0:
             self.__data = [{
                 "statement": "",
-                "verdict": 1,
+                "verdict": 0,
                 "evidence": ""
             }] * 10
         else:
