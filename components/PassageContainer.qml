@@ -17,12 +17,11 @@ Rectangle {
         }
         readOnly: true
         selectByMouse: true
-        mouseSelectionMode: TextEdit.SelectionCharacters
+        mouseSelectionMode: TextEdit.SelectWords
         wrapMode: TextEdit.WordWrap
         horizontalAlignment: TextEdit.AlignJustify
-
-        text: annotationModel.hightlightEvidence()
-        textFormat: TextEdit.AutoText
+        text: annotationModel.context
+        textFormat: TextEdit.PlainText
         padding: 5
         font {
             pointSize: 23
@@ -37,12 +36,11 @@ Rectangle {
             target: annotationModel
             
             function onContextChanged() {
-                contextTextArea.text = annotationModel.hightlightEvidence()
+                contextTextArea.text = annotationModel.context
             }
 
             function onSelectionChanged() {
-                console.log(annotationModel.context)
-                contextTextArea.text = annotationModel.hightlightEvidence()
+                contextTextArea.text = annotationModel.context
             }
         }
     }

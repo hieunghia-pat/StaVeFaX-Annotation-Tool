@@ -9,7 +9,7 @@ Rectangle {
 
     id: annotationItemContainer
     width: parentWidth
-    height: 200
+    height: columnLayout.height + 30
     border {
         width: 1
         color: "#d6d6d6"
@@ -40,8 +40,9 @@ Rectangle {
 
     Column {
         id: columnLayout
+        width: parent.width
+        height: implicitHeight
         anchors {
-            fill: parent
             centerIn: parent
         }
         spacing: 15
@@ -80,7 +81,7 @@ Rectangle {
                     color: "#cbccca"
                     width: 1
                 }
-                radius: 23
+                radius: 17
                 anchors {
                     horizontalCenter: parent.horizontalCenter
                 }
@@ -131,54 +132,37 @@ Rectangle {
         Rectangle {
             id: evidenceContainer
             width: annotationItemContainer.width
-            height: 30
+            height: evidenceText.height + 14
             color: "transparent"
             
             Rectangle {
+                id: evidenceTextContainer
                 width: parent.width - 20
-                height: parent.height
+                height: evidenceText.height + 14
                 border {
                     color: "#cbccca"
                     width: 1
                 }
-                radius: 23
+                radius: 17
                 anchors {
                     horizontalCenter: parent.horizontalCenter
                     verticalCenter: parent.verticalCenter
                 }
-                border {
-                    width: 1
-                    color: "blue"
-                }
 
-                ScrollView {
-                    anchors {
-                        fill: parent
-                        centerIn: parent
+                Text {
+                    id: evidenceText
+                    text: evidence
+                    font {
+                        pointSize: 13
                     }
-                    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-                    ScrollBar.vertical.policy: ScrollBar.AlwaysOff
-                    ScrollBar.horizontal.interactive: true
-                    ScrollBar.vertical.interactive: true
-
-                    TextEdit {
-                        id: evidenceText
-                        text: evidence
-                        font {
-                            pointSize: 13
-                        }
-                        readOnly: true
-                        enabled: true
-                        wrapMode: TextEdit.WrapAnywhere
-                        horizontalAlignment: TextEdit.AlignJustify
-                        verticalAlignment: TextEdit.AlignVCenter
-                        topPadding: 7
-                        leftPadding: 10
-                        anchors {
-                            fill: parent
-                            centerIn: parent
-                        }
-                    }
+                    width: parent.width - 5
+                    height: implicitHeight
+                    wrapMode: TextEdit.WrapAnywhere
+                    horizontalAlignment: TextEdit.AlignJustify
+                    verticalAlignment: TextEdit.AlignVCenter
+                    anchors.centerIn: parent
+                    leftPadding: 7
+                    
                 }
             }
         }

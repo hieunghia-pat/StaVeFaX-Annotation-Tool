@@ -180,28 +180,6 @@ class AnnotationModel(QAbstractListModel):
                 self.setStatementErrorSignal.emit(f"Cannot set evidence for information {idx}th")
 
         self.__selectedIndex = 0
-
-    @Slot(result=str)
-    def hightlightEvidence(self) -> str:
-        text = self.__context
-        selectionStart = self.__data[self.__selectedIndex].selectionStart
-        selectionEnd = self.__data[self.__selectedIndex].selectionEnd
-
-        if selectionStart == selectionEnd:
-            return text
-        
-        length = selectionEnd - selectionStart + 1
-        if length == len(text):
-            text =  ("<strong>" + text + "</strong>").strip()
-        else:
-            if selectionStart == 0:
-                text = ("<strong>" + text[:selectionEnd] + "</strong>" + text[selectionEnd+1:]).strip()
-            elif selectionEnd == len(text):
-                text = (text[:selectionStart-1] + "<strong>" + text[selectionStart:] + "</strong>").strip()
-            else:
-                text = (text[:selectionStart-1] + " <strong>" + text[selectionStart:selectionEnd] + "</strong>" + text[selectionEnd+1:]).strip()
-
-        return text
     
     @Slot(int)
     def addAnnotation(self, idx: int) -> bool:
