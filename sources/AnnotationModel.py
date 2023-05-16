@@ -1,4 +1,4 @@
-from typing import Optional, Union, Any, List, Dict
+from typing import Optional, Union, Any, Dict
 
 from PySide6.QtCore import Qt, QObject, QAbstractListModel, QModelIndex, QPersistentModelIndex, Signal, Slot, Property, QByteArray
 
@@ -16,6 +16,7 @@ class AnnotationModel(QAbstractListModel):
     setVerdictErrorSignal = Signal(str)
     setEvidenceErrorSignal = Signal(str)
     contextChanged = Signal()
+    selectionChanged = Signal()
 
     def __init__(self, parent: Optional[QObject] = ...) -> None:
         super().__init__()
@@ -24,7 +25,9 @@ class AnnotationModel(QAbstractListModel):
         self.__data = [Annotation({
             "statement": "Statement is unavailable",
             "verdict": 0,
-            "evidence": "Evidence is unavailable"
+            "evidence": "Evidence is unavailable",
+            "selectionStart": 0,
+            "selectionEnd": 0
         })]
         self.__selectedIndex = 0
 
@@ -37,11 +40,6 @@ class AnnotationModel(QAbstractListModel):
     @Property(str)
     def context(self) -> str:
         return self.__context
-    
-    @context.setter
-    def context(self, value: str):
-        print(value)
-        self.__context = value
     
     def data(self, index: Union[QModelIndex, QPersistentModelIndex], role: int = ...) -> Any:
         if not index.isValid():
@@ -130,6 +128,16 @@ class AnnotationModel(QAbstractListModel):
             return
         index = self.createIndex(self.__selectedIndex, 0)
         self.setData(index, evidence, self.EVIDENCE)
+
+    @Slot(int, int)
+    def setSelectionIndices(self, selectionStart: int, selectionEnd: int) -> None:
+        if selectionStart == selectionEnd:
+            return None
+        
+        self.__data[self.__selectedIndex].setSelectionStart(selectionStart)
+        self.__data[self.__selectedIndex].setSelectionEnd(selectionEnd)
+
+        self.selectionChanged.emit()
     
     @Slot(dict)
     def setAnnotations(self, annotation: dict):
@@ -170,6 +178,30 @@ class AnnotationModel(QAbstractListModel):
                                       item["evidence"], self.EVIDENCE)
             if not setEvidence:
                 self.setStatementErrorSignal.emit(f"Cannot set evidence for information {idx}th")
+
+        self.__selectedIndex = 0
+
+    @Slot(result=str)
+    def hightlightEvidence(self) -> str:
+        text = self.__context
+        selectionStart = self.__data[self.__selectedIndex].selectionStart
+        selectionEnd = self.__data[self.__selectedIndex].selectionEnd
+
+        if selectionStart == selectionEnd:
+            return text
+        
+        length = selectionEnd - selectionStart + 1
+        if length == len(text):
+            text =  ("<strong>" + text + "</strong>").strip()
+        else:
+            if selectionStart == 0:
+                text = ("<strong>" + text[:selectionEnd] + "</strong>" + text[selectionEnd+1:]).strip()
+            elif selectionEnd == len(text):
+                text = (text[:selectionStart-1] + "<strong>" + text[selectionStart:] + "</strong>").strip()
+            else:
+                text = (text[:selectionStart-1] + " <strong>" + text[selectionStart:selectionEnd] + "</strong>" + text[selectionEnd+1:]).strip()
+
+        return text
     
     @Slot(int)
     def addAnnotation(self, idx: int) -> bool:

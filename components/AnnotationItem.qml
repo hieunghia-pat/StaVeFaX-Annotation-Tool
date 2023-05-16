@@ -38,16 +38,17 @@ Rectangle {
         propagateComposedEvents: true
     }
 
-    ColumnLayout {
+    Column {
         id: columnLayout
         anchors {
             fill: parent
             centerIn: parent
         }
+        spacing: 15
 
         Rectangle {
             id: labelContainer
-            width: label.implicitWidth
+            width: parent.width
             height: label.implicitHeight
             color: "transparent"
             Label {
@@ -70,7 +71,7 @@ Rectangle {
             
             Rectangle {
                 width: parent.width - 20
-                height: 30
+                height: parent.height
                 anchors {
                     centerIn: parent
                     horizontalCenter: parent.horizontalCenter
@@ -110,7 +111,7 @@ Rectangle {
 
         Rectangle {
             id: verdictContainer
-            width: verdict.width + 25
+            width: verdict.width
             height: verdict.height
             color: "transparent"
 
@@ -130,12 +131,12 @@ Rectangle {
         Rectangle {
             id: evidenceContainer
             width: annotationItemContainer.width
-            height: evidenceText.height
+            height: 30
             color: "transparent"
             
             Rectangle {
                 width: parent.width - 20
-                height: evidenceText.height
+                height: parent.height
                 border {
                     color: "#cbccca"
                     width: 1
@@ -143,6 +144,11 @@ Rectangle {
                 radius: 23
                 anchors {
                     horizontalCenter: parent.horizontalCenter
+                    verticalCenter: parent.verticalCenter
+                }
+                border {
+                    width: 1
+                    color: "blue"
                 }
 
                 ScrollView {
@@ -150,23 +156,27 @@ Rectangle {
                         fill: parent
                         centerIn: parent
                     }
+                    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                    ScrollBar.vertical.policy: ScrollBar.AlwaysOff
+                    ScrollBar.horizontal.interactive: true
+                    ScrollBar.vertical.interactive: true
 
-                    TextArea {
+                    TextEdit {
                         id: evidenceText
-                        width: parent.width
-                        height: implicitHeight
                         text: evidence
                         font {
                             pointSize: 13
                         }
                         readOnly: true
-                        enabled: false
-                        padding: 7
-                        horizontalAlignment: Text.AlignHCenter
+                        enabled: true
+                        wrapMode: TextEdit.WrapAnywhere
+                        horizontalAlignment: TextEdit.AlignJustify
+                        verticalAlignment: TextEdit.AlignVCenter
+                        topPadding: 7
+                        leftPadding: 10
                         anchors {
-                            centerIn: parent
                             fill: parent
-                            horizontalCenter: parent.HorizontalCenter
+                            centerIn: parent
                         }
                     }
                 }

@@ -2,9 +2,12 @@ import QtQuick
 import QtQuick.Controls
 
 Rectangle {
-    property string context
-
     id: passageContainer
+
+    border {
+        width: 2
+        color: "red"
+    }
 
     TextArea {
         id: contextTextArea
@@ -14,21 +17,32 @@ Rectangle {
         }
         readOnly: true
         selectByMouse: true
-        mouseSelectionMode: TextEdit.SelectWords
+        mouseSelectionMode: TextEdit.SelectionCharacters
+        wrapMode: TextEdit.WordWrap
+        horizontalAlignment: TextEdit.AlignJustify
 
-        text: context
+        text: annotationModel.hightlightEvidence()
+        textFormat: TextEdit.AutoText
         padding: 5
         font {
             pointSize: 23
         }
+        
         onSelectedTextChanged: {
+            annotationModel.setSelectionIndices(selectionStart, selectionEnd)
             annotationModel.setEvidence(selectedText)
         }
 
         Connections {
             target: annotationModel
-            onContextChanged: {
-                contextTextArea.text = context
+            
+            function onContextChanged() {
+                contextTextArea.text = annotationModel.hightlightEvidence()
+            }
+
+            function onSelectionChanged() {
+                console.log(annotationModel.context)
+                contextTextArea.text = annotationModel.hightlightEvidence()
             }
         }
     }

@@ -39,7 +39,6 @@ ApplicationWindow {
         PassageContainer {
             width: (parent.width / 2) - 10
             height: parent.height
-            context: annotationModel.context
         }
 
         Rectangle {

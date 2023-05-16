@@ -14,7 +14,9 @@ class Annotation(QObject):
         self.__annotation = annotation if annotation is not None else {
             "statement": "",
             "verdict": 1,
-            "evidence": ""
+            "evidence": "",
+            "selectionStart": 0,
+            "selectionEnd": 0
         }
 
     @property
@@ -41,3 +43,17 @@ class Annotation(QObject):
 
     def setEvidence(self, value: str) -> None:
         self.__annotation["evidence"] = value
+
+    @property
+    def selectionStart(self) -> int:
+        return self.__annotation["selectionStart"]
+
+    def setSelectionStart(self, value: int) -> None:
+        self.__annotation["selectionStart"] = value
+
+    @property
+    def selectionEnd(self) -> int:
+        return self.__annotation["selectionEnd"]
+    
+    def setSelectionEnd(self, value: int) -> None:
+        self.__annotation["selectionEnd"] = value
