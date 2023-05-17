@@ -123,6 +123,10 @@ class AnnotationModel(QAbstractListModel):
         self.__selectedIndex = value
 
     @Slot(str)
+    def setStatement(self, statement: str):
+        self.__data[self.__selectedIndex].setStatement(statement)
+
+    @Slot(str)
     def setEvidence(self, evidence: str):
         if evidence == "": # skip updating when evidence is an empty string
             return

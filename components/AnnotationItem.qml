@@ -50,29 +50,33 @@ Rectangle {
         Rectangle {
             id: labelContainer
             width: parent.width
-            height: label.implicitHeight
+            height: label.height + 10
             color: "transparent"
             Label {
                 id: label
-                anchors {
-                    fill: parent
-                    centerIn: parent
-                }
+                width: parent.width
+                height: implicitHeight
                 text: "Annotation " + (index+1)
-                topPadding: 7
-                leftPadding: 15
+                leftPadding: 7
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                }
+                font {
+                    pointSize: 17
+                }
             }
         }
 
         Rectangle {
             id: statementContainer
             width: annotationItemContainer.width
-            height: 30
+            height: statementWrapper.height
             color: "transparent"
             
             Rectangle {
+                id: statementWrapper
                 width: parent.width - 20
-                height: parent.height
+                height: statementTextLine.height + 10
                 anchors {
                     centerIn: parent
                     horizontalCenter: parent.horizontalCenter
@@ -86,59 +90,69 @@ Rectangle {
                     horizontalCenter: parent.horizontalCenter
                 }
 
-                TextEdit {
+                TextInput {
                     id: statementTextLine
                     width: parent.width
-                    height: parent.height
+                    height: implicitHeight
                     leftPadding: 10
                     verticalAlignment: TextEdit.AlignVCenter
                     anchors {
-                        fill: parent
-                        centerIn: parent
+                        horizontalCenter: parent.horizontalCenter
+                        verticalCenter: parent.verticalCenter
                     }
 
                     text: statement
                     font {
-                        pointSize: 13
+                        pointSize: 17
                     }
 
                     onFocusChanged: isFocus => updateFocus(isFocus)
-                    onTextChanged: {
-                        statement = text
-                    }
+                    onTextChanged: annotationModel.setStatement(text)
                 }
             }
         }
 
         Rectangle {
             id: verdictContainer
-            width: verdict.width
+            width: parent.width
             height: verdict.height
             color: "transparent"
 
-            ComboBox {
-                id: verdict
-                width: implicitWidth
-                height: implicitHeight
+            Rectangle {
+                id: verdictWrapper
                 anchors {
+                    fill: parent
+                    centerIn: parent
+                    verticalCenter: parent.verticalCenter
                     horizontalCenter: parent.horizontalCenter
+                    margins: 7
                 }
-                model: ["SUPPORTED", "NEI", "REFUTED"]
-                currentIndex: 1
-                onFocusChanged: isFocus => updateFocus(isFocus)
+
+                ComboBox {
+                    id: verdict
+                    width: implicitWidth
+                    height: implicitHeight
+                    anchors {
+                        verticalCenter: parent.verticalCenter
+                        margins: 50
+                    }
+                    model: ["SUPPORTED", "NEI", "REFUTED"]
+                    currentIndex: 1
+                    onFocusChanged: isFocus => updateFocus(isFocus)
+                }
             }
         }
 
         Rectangle {
             id: evidenceContainer
             width: annotationItemContainer.width
-            height: evidenceText.height + 14
+            height: evidenceTextContainer.height
             color: "transparent"
             
             Rectangle {
                 id: evidenceTextContainer
                 width: parent.width - 20
-                height: evidenceText.height + 14
+                height: evidenceText.height + 20
                 border {
                     color: "#cbccca"
                     width: 1
@@ -146,14 +160,13 @@ Rectangle {
                 radius: 17
                 anchors {
                     horizontalCenter: parent.horizontalCenter
-                    verticalCenter: parent.verticalCenter
                 }
 
                 Text {
                     id: evidenceText
                     text: evidence
                     font {
-                        pointSize: 13
+                        pointSize: 17
                     }
                     width: parent.width - 5
                     height: implicitHeight
@@ -162,7 +175,6 @@ Rectangle {
                     verticalAlignment: TextEdit.AlignVCenter
                     anchors.centerIn: parent
                     leftPadding: 7
-                    
                 }
             }
         }
