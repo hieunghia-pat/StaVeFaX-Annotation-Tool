@@ -4,58 +4,62 @@ import re
 from PySide6.QtCore import QObject, Signal, Slot, QStandardPaths
 
 class Backend(QObject):
-    fileNotFoundSignal = Signal(str)
-    loadedAnnotations = Signal(dict)
+	fileNotFoundSignal = Signal(str)
+	loadedAnnotations = Signal(dict)
 
-    def __init__(self, parent: QObject = QObject()) -> None:
-        super().__init__(parent)
+	def __init__(self, parent: QObject = QObject()) -> None:
+		super().__init__(parent)
 
-        # internal properties
-        self.__data = []
-        self.__currentIdx = 0
-        self.__selectedPath: str = QStandardPaths.standardLocations(QStandardPaths.DocumentsLocation)[0]
+		# internal properties
+		self.__data = []
+		self.__currentIdx = 0
+		self.__selectedPath: str = QStandardPaths.standardLocations(QStandardPaths.DocumentsLocation)[0]
 
-    def __len__(self) -> int:
-        return len(self.__data)
-    
-    def annotation(self, idx: int = None):
-        if idx is None:
-            return self.__data[self.__currentIdx]
+	def __len__(self) -> int:
+		return len(self.__data)
 
-        return self.__data[idx]
+	def annotation(self, idx: int = None):
+		if idx is None:
+			return self.__data[self.__currentIdx]
 
-    @Slot(str)
-    def loadData(self, path: str) -> bool:
-        path = re.sub("file://", "", path)
-        try:
-            tmpData = json.load(open(path, "r"))
-        except FileNotFoundError as error:
-            self.fileNotFoundSignal.emit(error.strerror)
-            return False
+		return self.__data[idx]
 
-        self.__selectedPath = path
-        self.__data = tmpData
-        self.loadedAnnotations.emit(self.__data[self.__currentIdx])
+	@Slot(str)
+	def loadData(self, path: str) -> bool:
+		path = re.sub("file://", "", path)
+		try:
+			tmpData = json.load(open(path, "r"))
+		except FileNotFoundError as error:
+			self.fileNotFoundSignal.emit(error.strerror)
+			return False
 
-        return True
-    
-    @Slot()
-    def saveData(self):
-        json.dumps(self.__data, open(self.__selectedPath, "w+"), ensure_ascii=True)
+		self.__selectedPath = path
+		self.__data = tmpData
+		self.loadedAnnotations.emit(self.__data[self.__currentIdx])
 
-    @Slot()
-    def nextAnnotation(self) -> None:
-        if self.__currentIdx == len(self) - 1:
-            return
-        
-        self.__currentIdx += 1
-        self.loadedAnnotations.emit(self.__data[self.__currentIdx])
+		return True
 
-    @Slot()
-    def previousAnnotation(self) -> None:
-        if self.__currentIdx < 0:
-            self.__currentIdx = 0
-            return
+	@Slot(list)
+	def updateAnnotation(self, annotations: list) -> None:
+		self.__data[self.__currentIdx]["information"] = [annotation.annotation for annotation in annotations]
 
-        self.__currentIdx -= 1
-        self.loadedAnnotations.emit(self.__data[self.__currentIdx])
+	@Slot()
+	def saveData(self):
+		json.dump(self.__data, open(self.__selectedPath, "w+"),
+					ensure_ascii=False, indent=4)
+
+	@Slot()
+	def nextAnnotation(self) -> None:
+		if self.__currentIdx == len(self) - 1:
+			return
+
+		self.__currentIdx += 1
+		self.loadedAnnotations.emit(self.__data[self.__currentIdx])
+
+	@Slot()
+	def previousAnnotation(self) -> None:
+		if self.__currentIdx == 0:
+			return
+
+		self.__currentIdx -= 1
+		self.loadedAnnotations.emit(self.__data[self.__currentIdx])

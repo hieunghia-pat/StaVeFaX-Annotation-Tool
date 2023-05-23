@@ -5,8 +5,6 @@ import QtQuick.Layouts
 Rectangle {
     property int parentWidth
 
-    signal updateFocus(isFocus: bool)
-
     id: annotationItemContainer
     width: parentWidth
     height: columnLayout.height + 30
@@ -16,26 +14,29 @@ Rectangle {
     }
     radius: 23
 
+    MouseArea {
+        anchors {
+            fill: parent
+            centerIn: parent
+        }
+
+        onClicked: annotationModel.selectedIndex = index
+        propagateComposedEvents: true
+    }
+
     Connections {
-        target: annotationItemContainer
-        function onUpdateFocus(isFocus) {
+        target: annotationModel
+        function onSelectedIndexChanged() {
+            var isFocus = (annotationModel.selectedIndex == index)
             if (isFocus) {
                 annotationItemContainer.border.color = "#c2c2c2"
                 annotationItemContainer.border.width = 2
-                annotationModel.selectedIndex = index
             }
             else {
                 annotationItemContainer.border.color = "#d6d6d6"
                 annotationItemContainer.border.width = 1
             }
         }
-    }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        propagateComposedEvents: true
     }
 
     Column {
@@ -90,7 +91,7 @@ Rectangle {
                     horizontalCenter: parent.horizontalCenter
                 }
 
-                TextInput {
+                TextEdit {
                     id: statementTextLine
                     width: parent.width
                     height: implicitHeight
@@ -106,8 +107,19 @@ Rectangle {
                         pointSize: 17
                     }
 
-                    onFocusChanged: isFocus => updateFocus(isFocus)
-                    onTextChanged: annotationModel.setStatement(text)
+                    onFocusChanged: isFocus => {
+                                        if (isFocus) {
+                                            annotationModel.selectedIndex = index
+                                        }
+                                    }
+
+                    onTextChanged: statement = text
+
+                    Keys.onPressed: (event) => {
+                        if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter || event.key == Qt.Key_Tab)
+                            // ignore these keys
+                            event.accepted = true
+                    }
                 }
             }
         }
@@ -115,7 +127,7 @@ Rectangle {
         Rectangle {
             id: verdictContainer
             width: parent.width
-            height: verdict.height
+            height: comboBox.height
             color: "transparent"
 
             Rectangle {
@@ -129,7 +141,7 @@ Rectangle {
                 }
 
                 ComboBox {
-                    id: verdict
+                    id: comboBox
                     width: implicitWidth
                     height: implicitHeight
                     anchors {
@@ -137,8 +149,9 @@ Rectangle {
                         margins: 50
                     }
                     model: ["SUPPORTED", "NEI", "REFUTED"]
-                    currentIndex: 1
-                    onFocusChanged: isFocus => updateFocus(isFocus)
+                    currentIndex: verdict
+                    onCurrentIndexChanged: verdict = currentIndex
+                    onPressedChanged: annotationModel.selectedIndex = index
                 }
             }
         }
@@ -148,6 +161,15 @@ Rectangle {
             width: annotationItemContainer.width
             height: evidenceTextContainer.height
             color: "transparent"
+
+            MouseArea {
+                anchors {
+                    fill: parent
+                    centerIn: parent
+                }
+
+                onClicked: annotationModel.selectedIndex = index
+            }
             
             Rectangle {
                 id: evidenceTextContainer
@@ -170,7 +192,7 @@ Rectangle {
                     }
                     width: parent.width - 5
                     height: implicitHeight
-                    wrapMode: TextEdit.WrapAnywhere
+                    wrapMode: TextEdit.WordWrap
                     horizontalAlignment: TextEdit.AlignJustify
                     verticalAlignment: TextEdit.AlignVCenter
                     anchors.centerIn: parent

@@ -19,6 +19,7 @@ if __name__ == "__main__":
 	engine.rootContext().setContextProperty("annotationModel", annotationModel)
 	
 	backend.loadedAnnotations.connect(annotationModel.setAnnotations)
+	annotationModel.annotationUpdated.connect(backend.updateAnnotation)
 
 	qml_file = Path(__file__).resolve().parent / "main.qml"
 	engine.load(qml_file)

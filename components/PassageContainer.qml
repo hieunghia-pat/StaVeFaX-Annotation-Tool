@@ -1,46 +1,52 @@
 import QtQuick
 import QtQuick.Controls
+import QtQml
 
 Rectangle {
     id: passageContainer
 
-    border {
-        width: 2
-        color: "red"
+    width: (parent.width / 2) - 5
+    height: parent.height - 10
+    anchors {
+        left: parent.left
+        top: parent.top
+        margins: 5
     }
 
-    TextArea {
-        id: contextTextArea
+    ScrollView {
+        id: scrollView
         anchors {
             fill: parent
             centerIn: parent
         }
-        readOnly: true
-        selectByMouse: true
-        mouseSelectionMode: TextEdit.SelectWords
-        wrapMode: TextEdit.WordWrap
-        horizontalAlignment: TextEdit.AlignJustify
-        text: annotationModel.context
-        textFormat: TextEdit.PlainText
-        padding: 5
-        font {
-            pointSize: 23
-        }
-        
-        onSelectedTextChanged: {
-            annotationModel.setSelectionIndices(selectionStart, selectionEnd)
-            annotationModel.setEvidence(selectedText)
-        }
+        ScrollBar.vertical.policy: ScrollBar.AlwaysOff
 
-        Connections {
-            target: annotationModel
-            
-            function onContextChanged() {
-                contextTextArea.text = annotationModel.context
+        TextArea {
+            id: contextText
+            width: parent.width - 10
+            height: parent.height
+            implicitWidth: contentWidth
+            implicitHeight: contentHeight + 10
+            readOnly: true
+            selectByMouse: true
+            mouseSelectionMode: TextEdit.SelectWords
+            wrapMode: TextEdit.WordWrap
+            horizontalAlignment: TextEdit.AlignJustify
+            text: annotationModel.context
+            textFormat: TextEdit.PlainText
+            font {
+                pointSize: 23
             }
 
-            function onSelectionChanged() {
-                contextTextArea.text = annotationModel.context
+            padding: 5
+            onSelectedTextChanged: annotationModel.setEvidence(selectedText)
+
+            Connections {
+                target: annotationModel
+                
+                function onContextChanged() {
+                    contextText.text = annotationModel.context
+                }
             }
         }
     }

@@ -22,7 +22,10 @@ MenuBar {
             icon {
                 source: "../media/icons/save-icon.png"
             }
-            onTriggered: backend.saveData()
+            onTriggered: {
+                console.log("Saving file ...")
+                backend.saveData()
+            }
         }
 
         Action {
