@@ -80,5 +80,4 @@ ApplicationWindow {
         onActivated: backend.previousAnnotation()
         context: Qt.ApplicationShortcut
     }
-
 }
