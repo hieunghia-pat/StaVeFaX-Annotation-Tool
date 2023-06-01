@@ -32,19 +32,29 @@ Rectangle {
             mouseSelectionMode: TextEdit.SelectWords
             wrapMode: TextEdit.WordWrap
             horizontalAlignment: TextEdit.AlignJustify
-            text: annotationModel.context
-            textFormat: TextEdit.PlainText
-            font {
-                pointSize: 23
-            }
+            text: ""
+            textFormat: TextEdit.RichText
+            font.pointSize: 23
 
             padding: 5
-            onSelectedTextChanged: annotationModel.setEvidence(selectedText)
+//            onSelectedTextChanged: {
+//                annotationModel.evidence = selectedText
+//                annotationModel.start = selectionStart
+//                annotationModel.end = selectionEnd
+//            }
 
             Connections {
                 target: annotationModel
                 
                 function onContextChanged() {
+                    contextText.text = annotationModel.context
+                }
+
+                function onFinishedLoadingAnnotation() {
+                    contextText.text = annotationModel.context
+                }
+
+                function onSelectedIndexChanged() {
                     contextText.text = annotationModel.context
                 }
             }

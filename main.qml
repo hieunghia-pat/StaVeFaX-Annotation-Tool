@@ -61,6 +61,14 @@ ApplicationWindow {
                 }
                 delegate: AnnotationItem {
                     parentWidth: annotationContainer.width
+
+                    Connections {
+                        target: MainMenuBar
+
+                        function onCutSignal() {
+
+                        }
+                    }
                 }
                 spacing: 10
             }

@@ -9,6 +9,8 @@ class AnnotationModel(QAbstractListModel):
 	STATEMENT = Qt.UserRole
 	VERDICT = Qt.UserRole + 1
 	EVIDENCE = Qt.UserRole + 2
+	START = Qt.UserRole + 3
+	END = Qt.UserRole + 4
 
 	# signals
 	rowInsertErrorSignal = Signal(str)
@@ -18,15 +20,19 @@ class AnnotationModel(QAbstractListModel):
 	contextChanged = Signal()
 	annotationUpdated = Signal(list)
 	selectedIndexChanged = Signal()
+	startedLoadingAnnotation = Signal()
+	finishedLoadingAnnotation = Signal()
 
 	def __init__(self, parent: Optional[QObject] = ...) -> None:
 		super().__init__()
 
 		self.__context = "Context is unavailable"
 		self.__data = [Annotation({
-			"statement": "Statement is unavailable",
+			"statement": "",
 			"verdict": 1,
-			"evidence": "Evidence is unavailable"
+			"evidence": "Evidence is unavailable",
+			"start": 0,
+			"end": 0
 		})]
 		self.__selectedIndex = 0
 
@@ -47,12 +53,20 @@ class AnnotationModel(QAbstractListModel):
 
 	@Property(str)
 	def context(self) -> str:
-		return self.__context
+		start_index = self.__data[self.__selectedIndex].startIndex
+		end_index = self.__data[self.__selectedIndex].endIndex
+		if start_index == end_index:
+			return self.__context
+		context = list(self.__context)
+		context.insert(start_index, "<strong>")
+		context.insert(end_index+1, "</strong>")
 
-	@context.setter
-	def context(self, value: str) -> None:
-		if self.__context != value:
-			self.__context = value
+		context = "".join(context)
+		passages = context.split("\n\n")
+		passages = [f"<p>{passage}</p>" for passage in passages]
+		passages = "".join(passages)
+
+		return passages
 
 	def data(self, index: Union[QModelIndex, QPersistentModelIndex], role: int = ...) -> Any:
 		if not index.isValid():
@@ -66,6 +80,12 @@ class AnnotationModel(QAbstractListModel):
 
 		if role == self.EVIDENCE:
 			return self.__data[index.row()].evidence
+
+		if role == self.START:
+			return self.__data[index.row()].startIndex
+
+		if role == self.END:
+			return self.__data[index.row()].endIndex
 
 		return None
 
@@ -87,6 +107,18 @@ class AnnotationModel(QAbstractListModel):
 
 		if role == self.EVIDENCE:
 			self.__data[index.row()].setEvidence(str(value))
+			self.dataChanged.emit(index, index, Qt.DisplayRole)
+			self.annotationUpdated.emit(self.__data)
+			return True
+
+		if role == self.START:
+			self.__data[index.row()].setStartIndex(int(value))
+			self.dataChanged.emit(index, index, Qt.DisplayRole)
+			self.annotationUpdated.emit(self.__data)
+			return True
+
+		if role == self.END:
+			self.__data[index.row()].setEndIndex(int(value))
 			self.dataChanged.emit(index, index, Qt.DisplayRole)
 			self.annotationUpdated.emit(self.__data)
 			return True
@@ -117,7 +149,9 @@ class AnnotationModel(QAbstractListModel):
 		return {
 			self.STATEMENT: b"statement",
 			self.VERDICT: b"verdict",
-			self.EVIDENCE: b"evidence"
+			self.EVIDENCE: b"evidence",
+			self.START: b"start",
+			self.END: b"end"
 		}
 
 	def flags(self, index: Union[QModelIndex, QPersistentModelIndex]) -> Qt.ItemFlag:
@@ -130,16 +164,9 @@ class AnnotationModel(QAbstractListModel):
 	def annotations(self):
 		return [annotation.annotation for annotation in self.__data]
 
-	@Slot(str)
-	def setEvidence(self, evidence: str) -> None:
-		if evidence == "":
-			return
-
-		index = self.createIndex(self.__selectedIndex, 0)
-		self.setData(index, evidence, self.EVIDENCE)
-
 	@Slot(dict)
 	def setAnnotations(self, annotation: dict) -> bool:
+		self.startedLoadingAnnotation.emit()
 		# clear all previous annotations
 		while self.rowCount() > 0:
 			self.removeRow(0)
@@ -172,6 +199,18 @@ class AnnotationModel(QAbstractListModel):
 				self.setStatementErrorSignal.emit(f"Cannot set evidence for information {idx}th")
 				raise Exception(f"Cannot set evidence for information {idx}th")
 				return False
+
+			setStartIndex = self.setData(self.index(idx, 0, QModelIndex()), item["start"], self.START)
+			if not setStartIndex:
+				raise Exception(f"Cannot set starting index for information {idx}th")
+				return False
+
+			setEndIndex = self.setData(self.index(idx, 0, QModelIndex()), item["end"], self.END)
+			if not setEndIndex:
+				raise Exception(f"Cannot set ending index for information {idx}th")
+				return False
+
+		self.finishedLoadingAnnotation.emit()
 
 		return True
 

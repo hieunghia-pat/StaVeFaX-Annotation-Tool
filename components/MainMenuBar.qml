@@ -6,7 +6,7 @@ MenuBar {
 
     Menu {
         title: qsTr("&File")
-        
+
         Action {
             id: openAction
             text: qsTr("&Open")
@@ -77,7 +77,7 @@ MenuBar {
 
             }
         }
-        
+
         Action {
             id: cutAction
             text: qsTr("&Cut")
@@ -87,7 +87,7 @@ MenuBar {
                 source: "../media/icons/cut-icon.png"
             }
             onTriggered: {
-                
+
             }
         }
 

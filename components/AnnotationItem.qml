@@ -96,6 +96,7 @@ Rectangle {
                     width: parent.width
                     height: implicitHeight
                     leftPadding: 10
+                    wrapMode: TextEdit.WordWrap
                     verticalAlignment: TextEdit.AlignVCenter
                     anchors {
                         horizontalCenter: parent.horizontalCenter
@@ -187,9 +188,7 @@ Rectangle {
                 Text {
                     id: evidenceText
                     text: evidence
-                    font {
-                        pointSize: 17
-                    }
+                    font.pointSize: 17
                     width: parent.width - 5
                     height: implicitHeight
                     wrapMode: TextEdit.WordWrap

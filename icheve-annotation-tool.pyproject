@@ -1,3 +1,3 @@
 {
-    "files": ["components/MainMenuBar.qml","components/MainToolBar.qml","sources/Backend.py","sources/AnnotationModel.py","components/AnnotationItem.qml","main.py","main.qml","components/PassageContainer.qml","sources/Annotation.py","media/icons/close-icon.png","media/icons/copy-icon.png","media/icons/cut-icon.png","media/icons/open-icon.png","media/icons/paste-icon.png","media/icons/redo-icon.png","media/icons/save-icon.png","media/icons/undo-icon.png"]
+    "files": ["components/MainToolBar.qml","media/icons/open-icon.png","main.qml","components/AnnotationItem.qml","sources/AnnotationModel.py","main.py","media/icons/copy-icon.png","sources/Annotation.py","media/icons/paste-icon.png","media/icons/redo-icon.png","media/icons/cut-icon.png","media/icons/save-icon.png","sources/Backend.py","components/PassageContainer.qml","media/icons/undo-icon.png","media/icons/close-icon.png","components/MainMenuBar.qml","components/MainToolBar.qml"]
 }

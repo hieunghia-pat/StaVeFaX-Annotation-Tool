@@ -11,7 +11,16 @@ class Backend(QObject):
 		super().__init__(parent)
 
 		# internal properties
-		self.__data = []
+		self.__data = [{
+			"context": "Context is not available",
+			"information": [{
+				"statement": "",
+				"verdict": 1,
+				"evidence": "Evidence is not available",
+				"start": 0,
+				"end": 0
+			}]
+		}]
 		self.__currentIdx = 0
 		self.__selectedPath: str = QStandardPaths.standardLocations(QStandardPaths.DocumentsLocation)[0]
 
@@ -53,6 +62,8 @@ class Backend(QObject):
 		if self.__currentIdx == len(self) - 1:
 			return
 
+		self.saveData()
+
 		self.__currentIdx += 1
 		self.loadedAnnotations.emit(self.__data[self.__currentIdx])
 
@@ -60,6 +71,8 @@ class Backend(QObject):
 	def previousAnnotation(self) -> None:
 		if self.__currentIdx == 0:
 			return
+
+		self.saveData()
 
 		self.__currentIdx -= 1
 		self.loadedAnnotations.emit(self.__data[self.__currentIdx])
