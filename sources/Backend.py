@@ -5,8 +5,8 @@ from PySide6.QtCore import QObject, Signal, Slot, QStandardPaths
 
 class Backend(QObject):
 	fileNotFoundSignal = Signal(str)
-	openningFileErrorSignal = Signal(str)
-	opennedFileSignal = Signal()
+	openingFileErrorSignal = Signal(str)
+	openedFileSignal = Signal()
 	loadedAnnotations = Signal(dict)
 
 	def __init__(self, parent: QObject = QObject()) -> None:
@@ -44,13 +44,13 @@ class Backend(QObject):
 			self.fileNotFoundSignal.emit(error.strerror)
 			return False
 		except Exception as error:
-			self.openningFileErrorSignal.emit(error.strerror)
+			self.openingFileErrorSignal.emit(error.strerror)
 
 		self.__selectedPath = path
 		self.__data = tmpData
 		self.loadedAnnotations.emit(self.__data[self.__currentIdx])
 
-		self.opennedFileSignal.emit()
+		self.openedFileSignal.emit()
 
 		return True
 
