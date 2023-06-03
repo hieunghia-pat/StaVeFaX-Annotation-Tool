@@ -3,12 +3,14 @@ from pathlib import Path
 
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
+from PySide6.QtGui import QIcon
 
 from sources.AnnotationModel import AnnotationModel
 from sources.Backend import Backend
 
 if __name__ == "__main__":
 	app = QGuiApplication(sys.argv)
+	app.setWindowIcon(QIcon("media/logo-uit.webp"))
 
 	backend = Backend(app)
 	annotationModel = AnnotationModel()
