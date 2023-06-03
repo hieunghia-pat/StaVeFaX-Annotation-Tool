@@ -14,11 +14,25 @@ ApplicationWindow {
     minimumHeight: 500
     color: "white"
 
+    MouseArea {
+        id: mainMouseArea
+        anchors {
+            fill: parent
+            centerIn: parent
+        }
+
+        cursorShape: Qt.ArrowCursor
+    }
+
     FileDialog {
         id: openFileDialog
         onAccepted: {
             backend.loadData(selectedFile)
         }
+    }
+
+    NotificationDialog {
+        id: notificationDialog
     }
 
     menuBar: MainMenuBar {
@@ -72,6 +86,32 @@ ApplicationWindow {
                 }
                 spacing: 10
             }
+        }
+    }
+
+    Connections {
+        target: backend
+
+        function onOpenningFileErrorSignal(error: str) {
+            notificationDialog.text = "Error while openning file: " + error
+            notificationDialog.open()
+        }
+
+        function onOpennedFileSignal() {
+            notificationDialog.text = "Openned file successfully"
+            notificationDialog.open()
+        }
+    }
+
+    Connections {
+        target: annotationModel
+
+        function onStartedLoadingAnnotation() {
+            mainMouseArea.cursorShape = Qt.WaitCursor
+        }
+
+        function onFinishedLoadingAnnotation() {
+            mainMouseArea.cursorShape = Qt.ArrowCursor
         }
     }
 
