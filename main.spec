@@ -6,9 +6,9 @@ block_cipher = None
 
 a = Analysis(
     ['main.py'],
-    pathex=[],
+    pathex=['sources', 'components'],
     binaries=[],
-    datas=[],
+    datas=[('sources\\*', '.'), ('components\\*', '.'), ('media\\*', '.'), ('main.py', '.'), ('main.qml', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -37,6 +37,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon=['media\\logo-uit.ico'],
 )
 coll = COLLECT(
     exe,

@@ -1,7 +1,11 @@
 import json
 import re
 
-from PySide6.QtCore import QObject, Signal, Slot, QStandardPaths
+from PySide6.QtCore import QObject, Signal, Slot, QStandardPaths, QUrl
+
+from sources.logging_utils import setup_logger
+
+logger = setup_logger()
 
 class Backend(QObject):
 	fileNotFoundSignal = Signal(str)
@@ -37,14 +41,17 @@ class Backend(QObject):
 
 	@Slot(str)
 	def loadData(self, path: str) -> bool:
-		path = re.sub("file://", "", path)
+		path = QUrl(path).toLocalFile()
 		try:
-			tmpData = json.load(open(path, "r"))
+			tmpData = json.load(open(path, "r", encoding="utf8"))
 		except FileNotFoundError as error:
-			self.fileNotFoundSignal.emit(error.strerror)
+			error_message = f"Cannot find file or directory {path}"
+			self.fileNotFoundSignal.emit(error_message)
 			return False
 		except Exception as error:
-			self.openingFileErrorSignal.emit(error.strerror)
+			error_message = f"Cannot open {path} because of {error}"
+			self.openingFileErrorSignal.emit(error_message)
+			return False
 
 		self.__selectedPath = path
 		self.__data = tmpData

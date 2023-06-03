@@ -96,20 +96,13 @@ ApplicationWindow {
 
         function onFileNotFoundSignal(error: str) {
             notificationDialog.title = "Error"
-            notificationDialog.text = "Can not find the file or directory: " + openFileDialog.selectedFile
+            notificationDialog.text = error
             notificationDialog.open()
         }
 
         function onOpeningFileErrorSignal(error: str) {
             notificationDialog.title = "Error"
-            notificationDialog.text = "Error while opening file: " + error
-            notificationDialog.detailedText = "Cannot not open file or directory " + openFileDialog.selectedFile + " because of " + error
-            notificationDialog.open()
-        }
-
-        function onOpenedFileSignal() {
-            notificationDialog.title = "Error"
-            notificationDialog.text = "Openned file successfully"
+            notificationDialog.text = error
             notificationDialog.open()
         }
     }

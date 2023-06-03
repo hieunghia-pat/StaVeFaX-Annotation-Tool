@@ -10,7 +10,7 @@ from sources.Backend import Backend
 
 if __name__ == "__main__":
 	app = QGuiApplication(sys.argv)
-	app.setWindowIcon(QIcon("media/logo-uit.webp"))
+	app.setWindowIcon(QIcon("media/logo-uit.ico"))
 
 	backend = Backend(app)
 	annotationModel = AnnotationModel()
