@@ -1,11 +1,6 @@
 import json
-import re
 
 from PySide6.QtCore import QObject, Signal, Slot, QStandardPaths, QUrl
-
-from sources.logging_utils import setup_logger
-
-logger = setup_logger()
 
 class Backend(QObject):
 	fileNotFoundSignal = Signal(str)
