@@ -6,9 +6,9 @@ block_cipher = None
 
 a = Analysis(
     ['main.py'],
-    pathex=['sources', 'components'],
+    pathex=[],
     binaries=[],
-    datas=[('sources\\*', '.'), ('components\\*', '.'), ('media\\*', '.'), ('main.py', '.'), ('main.qml', '.')],
+    datas=[],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -37,7 +37,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['media\\logo-uit.ico'],
+    icon=['media/logo-uit.ico'],
 )
 coll = COLLECT(
     exe,
@@ -48,4 +48,10 @@ coll = COLLECT(
     upx=True,
     upx_exclude=[],
     name='main',
+)
+app = BUNDLE(
+    coll,
+    name='main.app',
+    icon='media/logo-uit.ico',
+    bundle_identifier=None,
 )
