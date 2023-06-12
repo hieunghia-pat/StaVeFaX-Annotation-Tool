@@ -62,7 +62,7 @@ class Backend(QObject):
 
 	@Slot()
 	def saveData(self):
-		json.dump(self.__data, open(self.__selectedPath, "w+"),
+		json.dump(self.__data, open(self.__selectedPath, "w+", encoding="utf8"),
 					ensure_ascii=False, indent=4)
 
 	@Slot()
