@@ -62,12 +62,104 @@ ApplicationWindow {
             margins: 5
         }
 
-        ScrollView {
+        Rectangle {
+            id: leftArrow
+            width: parent.width * 0.05
+            height: parent.height
             anchors {
-                fill: parent
-                centerIn: parent
+                left: parent.left
             }
+            color: "transparent"
+
+            MouseArea {
+                id: leftArrowMouseArea
+                hoverEnabled: true
+                onEntered: {
+                    leftArrowIconContainer.border.color = "#9c9c9c"
+                    leftArrowIconContainer.border.width = 2
+                }
+                onExited: leftArrowIconContainer.border.color = "transparent"
+                onClicked: backend.previousAnnotation()
+                anchors.fill: parent
+            }
+
+            Rectangle {
+                id: leftArrowIconContainer
+                width: parent.width
+                height: width
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    horizontalCenter: parent.horizontalCenter
+                    // margins: 5
+                }
+                radius: 50
+
+                Image {
+                    id: leftArrowIcon
+                    source: "media/icons/left-arrow.png"
+                    anchors {
+                        fill: parent
+                        centerIn: parent
+                        margins: 10
+                    }
+                    fillMode: Image.PreserveAspectFit
+                }
+            }
+        }
+
+        Rectangle {
+            id: rightArrow
+            width: parent.width * 0.05
+            height: parent.height
+            anchors {
+                right: parent.right
+            }
+            color: "transparent"
+
+            MouseArea {
+                id: rightArrowMouseArea
+                hoverEnabled: true
+                onEntered: {
+                    rightArrowIconContainer.border.color = "#9c9c9c"
+                    rightArrowIconContainer.border.width = 2
+                }
+                onExited: rightArrowIconContainer.border.color = "transparent"
+                onClicked: backend.nextAnnotation()
+                anchors.fill: parent
+            }
+
+            Rectangle {
+                id: rightArrowIconContainer
+                width: parent.width
+                height: width
+                radius: 50
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    horizontalCenter: parent.horizontalCenter
+                    // margins: 5
+                }
+
+                Image {
+                    id: rightArrowIcon
+                    source: "media/icons/right-arrow.png"
+                    anchors {
+                        fill: parent
+                        centerIn: parent
+                        margins: 10
+                    }
+                    fillMode: Image.PreserveAspectFit
+                }
+            }
+        }
+
+        ScrollView {
+            id: scrollView
+            width: parent.width * 0.9
+            height: parent.height
             ScrollBar.vertical.policy: ScrollBar.AlwaysOff
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+            }
 
             ListView {
                 model: annotationModel
@@ -76,7 +168,7 @@ ApplicationWindow {
                     centerIn: parent
                 }
                 delegate: AnnotationItem {
-                    parentWidth: annotationContainer.width
+                    parentWidth: scrollView.width
 
                     Connections {
                         target: MainMenuBar
@@ -117,19 +209,5 @@ ApplicationWindow {
         function onFinishedLoadingAnnotation() {
             mainMouseArea.cursorShape = Qt.ArrowCursor
         }
-    }
-
-    Shortcut {
-        id: nextAnnotationShortcut
-        sequence: "Ctrl+Right"
-        onActivated: backend.nextAnnotation()
-        context: Qt.ApplicationShortcut
-    }
-
-    Shortcut {
-        id: previousAnnotationShorcut
-        sequence: "Ctrl+Left"
-        onActivated: backend.previousAnnotation()
-        context: Qt.ApplicationShortcut
     }
 }
